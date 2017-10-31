@@ -34,27 +34,33 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
+    $leftMenu = [
         ['label' => Yii::t('common','Home'), 'url' => ['/site/index']],
-        ['label' => Yii::t('common','About'), 'url' => ['/site/about']],
+        ['label' => Yii::t('common','Article'), 'url' => ['/post/article']],
         ['label' => Yii::t('common','Contact'), 'url' => ['/site/contact']],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => Yii::t('common','Signup'), 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => Yii::t('common','Login'), 'url' => ['/site/login']];
+        $rightMenu[] = ['label' => Yii::t('common','Signup'), 'url' => ['/site/signup']];
+        $rightMenu[] = ['label' => Yii::t('common','Login'), 'url' => ['/site/login']];
     } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                Yii::t('common','Logout').' (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link']
-            )
-            . Html::endForm()
-            . '</li>';
+        $rightMenu[] = [
+            'label' => Html::img('statics/images/avatar/head.jpg',['class'=>'avatar_style','alt'=>
+                    Yii::t('common','Logout').' (' . Yii::$app->user->identity->username . ')']),
+            'items' => [
+                 ['label' =>Yii::t('common','Logout').' (' . Yii::$app->user->identity->username . ')','url' => ['/site/logout'] , 'linkOptions' => ['data-method' => 'post']]
+            ],
+
+        ];
     }
     echo Nav::widget([
+        'options' => ['class' => 'navbar-nav navbar-left'],
+        'items' => $leftMenu,
+    ]);
+
+    echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
+        'encodeLabels' => false,
+        'items' => $rightMenu,
     ]);
     NavBar::end();
     ?>
