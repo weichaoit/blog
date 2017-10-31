@@ -9,6 +9,7 @@ $params = array_merge(
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
+    'language' => 'zh-CN',
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
@@ -28,14 +29,26 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+
+        // Url美化
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+        // 语言包配置
+        'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'fileMap' => [
+                        'common' => 'common.php',
+                    ],
+                ]
+            ]
+        ],
+
     ],
     'params' => $params,
 ];
