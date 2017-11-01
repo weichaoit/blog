@@ -10,4 +10,13 @@ return [
     'Please fill out the following fields to signup:' => '请填写以下字段注册：',
     'Email'   => '邮箱',
     'Article' => '文章',
+    'Two times the password is no consitent.' => '两次输入的密码不一致.',
+    'This username has already been taken.' => '用户名已经存在.',
+    'This email address has already been taken.' => '邮箱已经被注册.',
+    'ID' => '编号',
+    'Title' => '标题',
+    'Content' => '内容',
+    'LabelImg' => '标签图',
+    'Tags' => '标签',
+    'CatId' => '分类',
 ];
