@@ -12,6 +12,7 @@ namespace frontend\controllers;
 use common\models\Cats;
 use frontend\controllers\base\BaseController;
 use frontend\models\ArticleForm;
+use yii\helpers\Url;
 
 class ArticleController extends BaseController {
 
@@ -41,9 +42,26 @@ class ArticleController extends BaseController {
         return $this->render('index');
     }
 
+    /**
+     * 创建文章页面
+     * @return string
+     */
     public function actionCreate(){
         $model = new ArticleForm();
+        // 定义场景
+        $model->setScenario(ArticleForm::SCENARIOS_CREATE);
+
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            if(!$model->create()){
+                \Yii::$app->session->setFlash('warning',$model->_lastError);
+            }else{
+                return $this->redirect(['Article/view']);
+            }
+        }
+        // 获取所有分类.
         $cats = Cats::getAllCats();
         return $this->render('create',['model'=>$model,'cats'=>$cats]);
     }
+
+
 }

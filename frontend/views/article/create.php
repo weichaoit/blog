@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'initialFrameHeight' => 400,
                 ]
             ]) ?>
-            <?=$form->field($model,'tags')->textInput(['maxlength'=>true])?>
+            <?=$form->field($model,'tags')->widget('common\widgets\tags\TagWidget')?>
             <?=\yii\helpers\Html::submitButton('发布',['class'=> 'btn btn-success'])?>
             <?php ActiveForm::end()?>
         </div>
