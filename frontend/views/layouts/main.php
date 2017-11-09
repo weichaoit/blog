@@ -44,7 +44,7 @@ AppAsset::register($this);
         $rightMenu[] = ['label' => Yii::t('common','Login'), 'url' => ['/site/login']];
     } else {
         $rightMenu[] = [
-            'label' => Html::img('statics/images/avatar/head.jpg',['class'=>'avatar_style','alt'=>
+            'label' => Html::img('/statics/images/avatar/head.jpg',['class'=>'avatar_style','alt'=>
                     Yii::t('common','Logout').' (' . Yii::$app->user->identity->username . ')']),
             'items' => [
                  ['label' =>Yii::t('common','Logout').' (' . Yii::$app->user->identity->username . ')','url' => ['/site/logout'] , 'linkOptions' => ['data-method' => 'post']]

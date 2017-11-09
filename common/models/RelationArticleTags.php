@@ -22,6 +22,14 @@ class RelationArticleTags extends \yii\db\ActiveRecord
     }
 
     /**
+     * 关联标签表
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTag(){
+        return $this->hasOne(Tags::className(),['id'=>'tag_id']);
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()

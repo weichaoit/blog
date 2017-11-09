@@ -9,13 +9,45 @@
 namespace frontend\controllers;
 
 
+use common\models\ArticleExtends;
 use common\models\Cats;
 use frontend\controllers\base\BaseController;
 use frontend\models\ArticleForm;
 use yii\helpers\Url;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 
 class ArticleController extends BaseController {
 
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create','upload','ueditor'],
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['create','upload','ueditor'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    '*'      =>['get','post'],
+                ],
+            ],
+        ];
+    }
     public function actions()
     {
         return [
@@ -55,7 +87,7 @@ class ArticleController extends BaseController {
             if(!$model->create()){
                 \Yii::$app->session->setFlash('warning',$model->_lastError);
             }else{
-                return $this->redirect(['Article/view']);
+                return $this->redirect(['article/view','id'=>$model->id]);
             }
         }
         // 获取所有分类.
@@ -63,5 +95,15 @@ class ArticleController extends BaseController {
         return $this->render('create',['model'=>$model,'cats'=>$cats]);
     }
 
+    public function actionView($id){
+        $model = new ArticleForm();
+        $data = $model->getViewById($id);
+
+        // 文章统计
+        $model = new ArticleExtends();
+        $model->upCounter(['article_id'=>$id],'browser',1);
+
+        return $this->render('view',['data'=>$data]);
+    }
 
 }

@@ -10,6 +10,7 @@ namespace frontend\models;
 
 use common\models\Article;
 use common\models\RelationArticleTags;
+use common\models\Tags;
 use yii;
 use yii\base\Model;
 
@@ -111,6 +112,28 @@ class ArticleForm extends Model {
         }
     }
 
+    /**
+     * 通过id获取文章内容
+     * @param $id
+     */
+    public function getViewById($id){
+        $data = Article::find()->with('relate.tag','extend')->where(['id'=>$id])->asArray()->one();
+        if(!$data){
+            throw new yii\web\NotFoundHttpException('文章不存在');
+
+        }
+        // 出来标签格式
+        $data['tags'] = [];
+        if(isset($data['relate']) && !empty($data['relate'])){
+            foreach ($data['relate'] as $list){
+                $data['tags'][] = $list['tag']['tag_name'];
+            }
+        }
+        unset($data['relate']);
+        return $data;
+    }
+
+
     private function _getSummary($start=0,$end=90,$char = 'utf-8'){
         if(empty($this->content)) return null;
 
@@ -128,6 +151,10 @@ class ArticleForm extends Model {
         $this->trigger(self::EVENT_AFTER_CREATE);
     }
 
+    /**
+     * 添加标签
+     * @param $event
+     */
     public function _eventAddTag($event){
         // 保存标签.
         $tag = new TagForm();
@@ -136,6 +163,86 @@ class ArticleForm extends Model {
 
         // 删除原先的关联.
         RelationArticleTags::deleteAll(['article_id'=>$event->data['id']]);
+
+        // 批量保存文章和标签关联关系
+        if(!empty($tagIds)){
+            foreach ($tagIds as $k=>$id){
+                $row[$k]['article_id'] = $this->id;
+                $row[$k]['tag_id'] = $id;
+            }
+            // 批量插入
+            $res = (new yii\db\Query())->createCommand()
+                ->batchInsert(RelationArticleTags::tableName(),['article_id','tag_id'],$row)
+                ->execute();
+
+            if(!$res){
+                throw new \Exception('关联关系保存失败!');
+            }
+        }
+
+    }
+
+    public static function getList($cond,$curPage=1,$pageSize=10,$orderBy=['id'=>SORT_DESC]){
+
+        $model = new Article();
+
+        $fields = ['id','title','summary','label_img','cat_id','user_id','user_name','created_at','updated_at'];
+
+        $query = $model->find()
+            ->select($fields)
+            ->where($cond)
+            ->with('relate.tag','extend')
+            ->orderBy($orderBy);
+
+        // 获取分页数据.
+        $res = $model->getPages($query,$curPage,$pageSize);
+        // 格式化
+        $res['data'] = self::_formatList($res['data']);
+
+        return $res;
+
+    }
+
+    /**
+     * 数据格式化.
+     * @param $data
+     */
+    public static function _formatList($data){
+        foreach ($data as &$value){
+            $value['tags'] = [];
+            if(isset($value['relate']) && !empty($value['relate'])){
+                foreach ($value['relate'] as $item){
+                    $value['tags'][] = $item['tag']['tag_name'];
+                }
+            }
+            unset($value['relate']);
+        }
+
+        return $data;
+
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
