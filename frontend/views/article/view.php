@@ -1,6 +1,6 @@
 <?php
 $this->title = $data['title'];
-$this->params['breadcrumbs'][] = ['label'=>'文章','url'=>['post/index']];
+$this->params['breadcrumbs'][] = ['label'=>'文章','url'=>['article/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
