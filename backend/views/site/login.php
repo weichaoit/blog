@@ -40,14 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </div>'
         ])->passwordInput()->label(false) ?>
 
-        <?= $form->field($model, 'rememberMe')->checkbox() ?>
+        <div><a href="#" class="forgot">忘记密码</a></div>
 
         <div class="form-group">
             <?= Html::submitButton('登录', ['class' => 'btn btn-primary btn-quirk btn-block', 'name' => 'login-button']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
-
     </div>
 </div><!-- panel -->
 

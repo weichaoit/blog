@@ -37,7 +37,7 @@ class Cats extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'cat_name' => 'Cat Name',
+            'cat_name' => '分类',
         ];
     }
 
